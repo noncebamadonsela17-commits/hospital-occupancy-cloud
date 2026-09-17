@@ -15,3 +15,8 @@ variable "budget_limit_usd" {
   description = "Monthly budget alert in USD (student guardrail)."
   default     = 10
 }
+
+variable "budget_notification_email" {
+  type        = string
+  description = "Email for budget alerts. Set in terraform.tfvars (that file is gitignored — do not commit it)."
+}
