@@ -11,3 +11,18 @@ output "ingest_queue_url" {
 output "aws_region" {
   value = var.aws_region
 }
+
+output "uploader_user_arn" {
+  value       = aws_iam_user.uploader.arn
+  description = "Clinic identity: PutObject on bronze/ only. Create access keys in the console, not in git."
+}
+
+output "processor_role_arn" {
+  value       = aws_iam_role.processor.arn
+  description = "Lambda execution role: GetObject + SQS receive/delete."
+}
+
+output "auditor_user_arn" {
+  value       = aws_iam_user.auditor.arn
+  description = "Read-only identity: ListBucket + GetObject."
+}
