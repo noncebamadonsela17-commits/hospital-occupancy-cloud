@@ -27,3 +27,15 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "bronze" {
 }
 
 data "aws_caller_identity" "current" {}
+
+resource "aws_s3_bucket_notification" "bronze_to_sqs" {
+  bucket = aws_s3_bucket.bronze.id
+
+  queue {
+    queue_arn     = aws_sqs_queue.ingest.arn
+    events        = ["s3:ObjectCreated:*"]
+    filter_prefix = "bronze/"
+  }
+
+  depends_on = [aws_sqs_queue_policy.ingest_from_s3]
+}

@@ -16,3 +16,27 @@ resource "aws_sqs_queue_redrive_policy" "ingest" {
     maxReceiveCount     = 5
   })
 }
+
+resource "aws_sqs_queue_policy" "ingest_from_s3" {
+  queue_url = aws_sqs_queue.ingest.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "AllowS3SendMessage"
+        Effect = "Allow"
+        Principal = {
+          Service = "s3.amazonaws.com"
+        }
+        Action   = "sqs:SendMessage"
+        Resource = aws_sqs_queue.ingest.arn
+        Condition = {
+          ArnEquals = {
+            "aws:SourceArn" = aws_s3_bucket.bronze.arn
+          }
+        }
+      }
+    ]
+  })
+}
