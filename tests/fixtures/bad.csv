@@ -1,0 +1,2 @@
+encounter_id,patient_id,department,admit_date,discharge_date
+not-a-date,x,ICU,yesterday,tomorrow

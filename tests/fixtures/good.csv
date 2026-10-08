@@ -1,0 +1,4 @@
+encounter_id,patient_id,department,admission_date,discharge_date,encounter_type
+43d873ad-63b,4d8df101-4,General Medicine,2023-10-21,2023-10-26,inpatient
+b7919107-cc7,5598b4b2-7,Emergency,2025-11-25,2025-11-29,inpatient
+ace8f312-591,4a1d9575-2,Paediatrics,2024-11-25,,inpatient
