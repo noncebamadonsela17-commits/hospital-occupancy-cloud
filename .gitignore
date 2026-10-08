@@ -10,3 +10,4 @@ crash.log
 __pycache__/
 .pytest_cache/
 upload-work/
+terraform/build/

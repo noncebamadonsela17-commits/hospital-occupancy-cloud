@@ -26,3 +26,8 @@ output "auditor_user_arn" {
   value       = aws_iam_user.auditor.arn
   description = "Read-only identity: ListBucket + GetObject."
 }
+
+output "validator_function_name" {
+  value       = aws_lambda_function.validator.function_name
+  description = "Lambda that validates bronze CSVs from the ingest queue."
+}
