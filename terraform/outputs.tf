@@ -31,3 +31,8 @@ output "validator_function_name" {
   value       = aws_lambda_function.validator.function_name
   description = "Lambda that validates bronze CSVs from the ingest queue."
 }
+
+output "validator_errors_alarm_arn" {
+  value       = aws_cloudwatch_metric_alarm.validator_errors.arn
+  description = "CloudWatch alarm ARN when the validator Lambda errors."
+}
