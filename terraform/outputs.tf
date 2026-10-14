@@ -36,3 +36,8 @@ output "validator_errors_alarm_arn" {
   value       = aws_cloudwatch_metric_alarm.validator_errors.arn
   description = "CloudWatch alarm ARN when the validator Lambda errors."
 }
+
+output "ingest_dlq_alarm_arn" {
+  value       = aws_cloudwatch_metric_alarm.ingest_dlq_not_empty.arn
+  description = "CloudWatch alarm ARN when the ingest DLQ is not empty."
+}
