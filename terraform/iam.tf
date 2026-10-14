@@ -3,6 +3,7 @@
 
 locals {
   bronze_objects = "${aws_s3_bucket.bronze.arn}/bronze/*"
+  log_objects    = "${aws_s3_bucket.bronze.arn}/logs/*"
 }
 
 # --- Uploader: clinic laptop may PUT bronze CSVs only ---
@@ -59,6 +60,12 @@ resource "aws_iam_role_policy" "processor" {
         Effect   = "Allow"
         Action   = ["s3:GetObject"]
         Resource = local.bronze_objects
+      },
+      {
+        Sid      = "WriteAuditLogs"
+        Effect   = "Allow"
+        Action   = ["s3:PutObject"]
+        Resource = local.log_objects
       },
       {
         Sid    = "ReceiveIngestQueue"
