@@ -54,6 +54,31 @@ python3 scripts/retry_upload.py tests/fixtures/poison.csv \
    - Leave the bronze object (versioning keeps history)
    - Wait until both alarms return to OK
 
-## Later
+## How to read logs
 
-How to read logs, budget at 80%, and `terraform destroy` land in the next commits.
+Lambda writes to CloudWatch Logs log group:
+
+`/aws/lambda/hosp-occ-validator`
+
+Audit JSON also lands in S3: `s3://<bronze_bucket>/logs/<date>/<file>.json`.
+
+### One Logs Insights query
+
+Log group: `/aws/lambda/hosp-occ-validator`
+
+```
+fields @timestamp, @message
+| filter @message like /bronze/
+| sort @timestamp desc
+| limit 50
+```
+
+To search for one object, replace `bronze/` with the key, for example `bronze/encounters.csv`.
+
+## What to do if an alarm fires
+
+**DLQ not empty** (`hosp-occ-ingest-dlq-not-empty`): a clinic file failed validation five times. Open the DLQ message, read the S3 key, inspect `logs/<date>/` for `"valid": false`, fix or replace the CSV, re-upload, then purge the DLQ.
+
+**Lambda errors** (`hosp-occ-validator-errors`): open the log group above. If the CSV is bad, that is expected during a drill. If a good CSV fails, check IAM (`GetObject` on `bronze/`, `PutObject` on `logs/`) and the event source mapping.
+
+**Budget at 80%** (`hosp-occ-monthly`): stop unused applies. Confirm region is `af-south-1`. After a demo, run `terraform destroy` (full destroy checklist is the last commit). Do not leave Lambda log groups if you meant to tear everything down.
