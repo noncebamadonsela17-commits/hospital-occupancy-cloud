@@ -37,6 +37,13 @@ hospital-occupancy-cloud/
 └── docs/               # Architecture and runbook
 ```
 
+## Documentation
+
+| Document | Description |
+|----------|-------------|
+| [docs/runbook.md](docs/runbook.md) | Apply, clinic upload, failure drill, destroy |
+| [docs/architecture.md](docs/architecture.md) | Clinic → S3 → SQS → Lambda |
+
 ## Not in v1
 
 Kubernetes, Kafka, multi-region, Streamlit in the cloud.
