@@ -5,7 +5,9 @@
 
 A small AWS landing zone for the **bed occupancy** pipeline. Clinics upload encounter CSVs when they have power and network. The cloud side buffers files, processes them without an always-on VM, and alerts on failure and spend.
 
-This repo is the **cloud** half. The data-engineering pipeline lives in `bed-occupancy-pipeline`.
+This repo is the **cloud** half. The data-engineering pipeline lives in `bed-occupancy-pipeline`. Bronze CSVs use the same columns: `encounter_id`, `patient_id`, `department`, `admission_date`, `discharge_date`, `encounter_type`.
+
+S3 and SQS keep the file if the clinic drops offline. Lambda validates at the door — no 24/7 EC2. IAM is split into upload, process, and audit. A $10 budget and CloudWatch alarms (Lambda errors, DLQ) keep a student account honest. After a demo, destroy the stack.
 
 ---
 
