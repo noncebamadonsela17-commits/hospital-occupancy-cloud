@@ -123,7 +123,24 @@ Replace `bronze/` with a key such as `bronze/encounters.csv` to filter one file.
 
 ---
 
-## Destroy and cost
+## End-to-end demo
+
+One recorded pass with `bed-occupancy-pipeline` bronze `encounters.csv`.
+
+1. `terraform apply` in `af-south-1`. Note `bronze_bucket` and `ingest_queue_url`.
+2. Upload `encounters.csv` to `bronze/encounters.csv` with `scripts/retry_upload.py`.
+3. Screenshot or note:
+   - S3 object under `bronze/`
+   - Audit log `logs/<date>/encounters.csv.json` with `"valid": true`
+   - CloudWatch alarms (should be OK)
+   - AWS Budget `hosp-occ-monthly` ($10)
+4. Optional: upload `tests/fixtures/poison.csv`, show DLQ + alarms, then purge.
+
+The clinic can disconnect after step 2. Processing does not need their laptop.
+
+---
+
+## Destroy and leftover-resource checklist
 
 Monthly cap is `$10` (`var.budget_limit_usd`). Do not leave the stack up after a demo.
 
@@ -132,13 +149,21 @@ cd ~/Music/hospital-occupancy-cloud/terraform
 terraform destroy
 ```
 
-After destroy, in the console check:
+If destroy fails on a non-empty bucket:
 
-- S3 bucket gone (empty it first if Terraform cannot delete objects)
-- SQS queues gone
-- Lambda `hosp-occ-validator` gone
-- Log group `/aws/lambda/hosp-occ-validator` gone (delete by hand if it lingered)
-- Alarms gone
-- Budget can stay (it costs nothing) or be removed with destroy
+```bash
+aws s3 rm "s3://$(terraform output -raw bronze_bucket)" --recursive
+terraform destroy
+```
 
-A fuller demo + leftover-resource checklist is the last commit.
+Then confirm in the console (and billing) that these are gone:
+
+- [ ] S3 bronze bucket (including versions and `logs/`)
+- [ ] SQS ingest queue and `hosp-occ-ingest-dlq`
+- [ ] Lambda `hosp-occ-validator`
+- [ ] Log group `/aws/lambda/hosp-occ-validator` (delete by hand if Terraform left it)
+- [ ] Alarms `hosp-occ-validator-errors` and `hosp-occ-ingest-dlq-not-empty`
+- [ ] IAM users `hosp-occ-uploader` and `hosp-occ-auditor`, role `hosp-occ-processor`
+- [ ] Budget `hosp-occ-monthly` (optional to keep; it does not bill by itself)
+
+v1 is done when the path above works **and** spend returns to ~$0.
