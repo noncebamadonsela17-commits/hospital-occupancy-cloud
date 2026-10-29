@@ -2,6 +2,7 @@
 
 **Author:** Nonceba Mdonsela  
 **Type:** Cloud engineering — IaC, object storage, queue, IAM, monitoring, cost guardrail
+
 **Verification:** WTC-CP6FC7MD
 
 A small AWS landing zone for the **bed occupancy** pipeline. Clinics upload encounter CSVs when they have power and network. The cloud side buffers files, processes them without an always-on VM, and alerts on failure and spend.
